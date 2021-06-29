@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.RentaldemandDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.Rentaldemand">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="community" jdbcType="VARCHAR" property="community" />
+    <result column="building" jdbcType="VARCHAR" property="building" />
+    <result column="door" jdbcType="VARCHAR" property="door" />
+    <result column="demandPhone" jdbcType="VARCHAR" property="demandPhone" />
+    <result column="demandState" jdbcType="BOOLEAN" property="demandState" />
+    <result column="delFlag" jdbcType="BOOLEAN" property="delFlag" />
+
+  </resultMap>
+  <resultMap id="rentMap" type="com.xl.houseonline.entity.Rentaldemand" extends="BaseResultMap">
+    <association property="user" javaType="com.xl.houseonline.entity.User">
+      <id column="id" property="id"/>
+      <result column="gender" property="gender"/>
+      <result column="name" property="name"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `uid`, `location`, community, building, door, demandPhone, demandState, delFlag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rentaldemand
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="findAllRentalData" resultMap="rentMap">select rent.`id`,
+                                                              rent.`uid`,
+                                                              rent.`location`,
+                                                              rent.`community`,
+                                                              rent.`building`,rent.`door`,rent.`demandPhone`,rent.`demandState`,rent.`delFlag` ,u.`gender` ,u.`name`from `rentaldemand` rent ,
+                                                                                                                                                                         `user` u where rent.uid=u.id and rent.demandState=1
+    </select>
+  <select id="selectById" resultMap="rentMap">
+    select  r.*,u.`id`,u.`name`,u.`gender`
+    from rentaldemand r,user u
+    where r.`uid`=u.`id` and r.`id`=#{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from rentaldemand
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Rentaldemand" useGeneratedKeys="true">
+    insert into rentaldemand (`uid`, `location`, community, 
+      building, door, demandPhone, 
+      demandState, delFlag)
+    values (#{uid,jdbcType=INTEGER}, #{location,jdbcType=VARCHAR}, #{community,jdbcType=VARCHAR}, 
+      #{building,jdbcType=VARCHAR}, #{door,jdbcType=VARCHAR}, #{demandPhone,jdbcType=VARCHAR}, 
+      #{demandState,jdbcType=BOOLEAN}, #{delFlag,jdbcType=BOOLEAN})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Rentaldemand" useGeneratedKeys="true">
+    insert into rentaldemand
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        `uid`,
+      </if>
+      <if test="location != null">
+        `location`,
+      </if>
+      <if test="community != null">
+        community,
+      </if>
+      <if test="building != null">
+        building,
+      </if>
+      <if test="door != null">
+        door,
+      </if>
+      <if test="demandPhone != null">
+        demandPhone,
+      </if>
+      <if test="demandState != null">
+        demandState,
+      </if>
+      <if test="delFlag != null">
+        delFlag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null">
+        #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="door != null">
+        #{door,jdbcType=VARCHAR},
+      </if>
+      <if test="demandPhone != null">
+        #{demandPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="demandState != null">
+        #{demandState,jdbcType=BOOLEAN},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=BOOLEAN},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.Rentaldemand">
+    update rentaldemand
+    <set>
+      <if test="uid != null">
+        `uid` = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="location != null">
+        `location` = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null">
+        community = #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        building = #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="door != null">
+        door = #{door,jdbcType=VARCHAR},
+      </if>
+      <if test="demandPhone != null">
+        demandPhone = #{demandPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="demandState != null">
+        demandState = #{demandState,jdbcType=BOOLEAN},
+      </if>
+      <if test="delFlag != null">
+        delFlag = #{delFlag,jdbcType=BOOLEAN},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.Rentaldemand">
+    update rentaldemand
+    set `uid` = #{uid,jdbcType=INTEGER},
+      `location` = #{location,jdbcType=VARCHAR},
+      community = #{community,jdbcType=VARCHAR},
+      building = #{building,jdbcType=VARCHAR},
+      door = #{door,jdbcType=VARCHAR},
+      demandPhone = #{demandPhone,jdbcType=VARCHAR},
+      demandState = #{demandState,jdbcType=BOOLEAN},
+      delFlag = #{delFlag,jdbcType=BOOLEAN}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

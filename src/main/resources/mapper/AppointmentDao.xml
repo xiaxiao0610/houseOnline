@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.AppointmentDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.Appointment">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="houseId" jdbcType="INTEGER" property="houseId" />
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="adminId" jdbcType="INTEGER" property="adminId" />
+    <result column="rentalId" jdbcType="INTEGER" property="rentalId" />
+    <result column="appointmentDate" jdbcType="BIGINT" property="appointmentDate" />
+    <result column="appointmentStatus" jdbcType="BOOLEAN" property="appointmentStatus" />
+    <result column="createDate" jdbcType="BIGINT" property="createDate" />
+<!--    <result column="rentalademand" property="rentaldemand" javaType="com.xl.houseonline.entity.Rentaldemand"/>-->
+  </resultMap>
+
+  <resultMap id="findStatus0" type="com.xl.houseonline.entity.Appointment" extends="BaseResultMap">
+    <association property="rentaldemand" javaType="com.xl.houseonline.entity.Rentaldemand">
+      <id column="id1" property="id"/>
+      <result column="uid1" property="uid"/>
+      <result column="location1" property="location"/>
+      <result column="door1" property="door"/>
+      <result column="demandPhone1" property="demandPhone"/>
+      <result column="community1" property="community"/>
+      <result column="building1" property="building"/>
+      <result column="deFlag1" property="delFlag"/>
+      <result column="demandState1" property="demandState"/>
+
+<!--      <result column="user" property="user"/>-->
+    </association>
+
+    <association property="user" javaType="com.xl.houseonline.entity.User">
+      <id column="id" property="id"/>
+      <result column="gender" property="gender"/>
+      <result column="name" property="name"/>
+    </association>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, houseId, userId, adminId, rentalId, appointmentDate, appointmentStatus, createDate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from appointment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="findAllStatus0" resultMap="findStatus0">
+      select u.`name`,u.`gender`,a.`id`,a.`rentalId`,r.`id` as id1,r.`uid` as uid1,r.`location` as location1,r.`door` as door1,r.`demandPhone` as demandPhone1,
+             r.`community` as community1,r.`building` as building1,r.`delFlag` as deFlag,r.`demandState` as demandState1
+      from appointment a,rentaldemand r ,user u where r.`id`=a.`rentalId` and r.`uid`=u.`id`
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from appointment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Appointment" useGeneratedKeys="true">
+    insert into appointment (houseId, userId, adminId, 
+      rentalId, appointmentDate, appointmentStatus, 
+      createDate)
+    values (#{houseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER}, 
+      #{rentalId,jdbcType=INTEGER}, #{appointmentDate,jdbcType=BIGINT}, #{appointmentStatus,jdbcType=BOOLEAN}, 
+      #{createDate,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Appointment" useGeneratedKeys="true">
+    insert into appointment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        houseId,
+      </if>
+      <if test="userId != null">
+        userId,
+      </if>
+      <if test="adminId != null">
+        adminId,
+      </if>
+      <if test="rentalId != null">
+        rentalId,
+      </if>
+      <if test="appointmentDate != null">
+        appointmentDate,
+      </if>
+      <if test="appointmentStatus != null">
+        appointmentStatus,
+      </if>
+      <if test="createDate != null">
+        createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="rentalId != null">
+        #{rentalId,jdbcType=INTEGER},
+      </if>
+      <if test="appointmentDate != null">
+        #{appointmentDate,jdbcType=BIGINT},
+      </if>
+      <if test="appointmentStatus != null">
+        #{appointmentStatus,jdbcType=BOOLEAN},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.Appointment">
+    update appointment
+    <set>
+      <if test="houseId != null">
+        houseId = #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        userId = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        adminId = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="rentalId != null">
+        rentalId = #{rentalId,jdbcType=INTEGER},
+      </if>
+      <if test="appointmentDate != null">
+        appointmentDate = #{appointmentDate,jdbcType=BIGINT},
+      </if>
+      <if test="appointmentStatus != null">
+        appointmentStatus = #{appointmentStatus,jdbcType=BOOLEAN},
+      </if>
+      <if test="createDate != null">
+        createDate = #{createDate,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.Appointment">
+    update appointment
+    set houseId = #{houseId,jdbcType=INTEGER},
+      userId = #{userId,jdbcType=INTEGER},
+      adminId = #{adminId,jdbcType=INTEGER},
+      rentalId = #{rentalId,jdbcType=INTEGER},
+      appointmentDate = #{appointmentDate,jdbcType=BIGINT},
+      appointmentStatus = #{appointmentStatus,jdbcType=BOOLEAN},
+      createDate = #{createDate,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.UserDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="phone" jdbcType="CHAR" property="phone" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="enabled" jdbcType="BOOLEAN" property="enabled" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="userface" jdbcType="VARCHAR" property="userface" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="gender" jdbcType="CHAR" property="gender" />
+    <result column="wedlock" jdbcType="OTHER" property="wedlock" />
+    <result column="nationId" jdbcType="INTEGER" property="nationId" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="politicId" jdbcType="INTEGER" property="politicId" />
+    <result column="speak" jdbcType="BOOLEAN" property="speak" />
+  </resultMap>
+  <resultMap id="DetailUseMessage" type="com.xl.houseonline.entity.User" extends="BaseResultMap">
+    <association property="nation" javaType="com.xl.houseonline.entity.Nation">
+      <id column="nid" property="id"/>
+      <result column="nname" property="name"/>
+    </association>
+    <association property="political" javaType="com.xl.houseonline.entity.Political">
+      <id column="pid" property="id"/>
+      <result column="pname" property="name"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, phone, telephone, address, enabled, username, `password`, userface, remark, 
+    gender, wedlock, nationId, email, politicId, speak
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="findAllPage" resultMap="DetailUseMessage">
+    select u.*,
+           n.`id` as nid,
+           n.`name` as nname,
+           p.`id` as pid,
+           p.`name` as pname from
+           user u,nation n,political p
+           where u.`nationId`=n.`id` and
+                 u.`politicId`=p.`id`
+
+    <if test="page !=null and size!=null">
+      limit #{page},#{size}
+    </if>
+  </select>
+  <select id="UserCount" resultType="java.lang.Integer">
+    select count(*) from user;
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.User" useGeneratedKeys="true">
+    insert into user (`name`, phone, telephone, 
+      address, enabled, username, 
+      `password`, userface, remark, 
+      gender, wedlock, nationId, 
+      email, politicId, speak
+      )
+    values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=CHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{enabled,jdbcType=BOOLEAN}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{userface,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=CHAR}, #{wedlock,jdbcType=OTHER}, #{nationId,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{politicId,jdbcType=INTEGER}, #{speak,jdbcType=BOOLEAN}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.User" useGeneratedKeys="true">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        `password`,
+      </if>
+      <if test="userface != null">
+        userface,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="wedlock != null">
+        wedlock,
+      </if>
+      <if test="nationId != null">
+        nationId,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="politicId != null">
+        politicId,
+      </if>
+      <if test="speak != null">
+        speak,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=CHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=BOOLEAN},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="userface != null">
+        #{userface,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=CHAR},
+      </if>
+      <if test="wedlock != null">
+        #{wedlock,jdbcType=OTHER},
+      </if>
+      <if test="nationId != null">
+        #{nationId,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="politicId != null">
+        #{politicId,jdbcType=INTEGER},
+      </if>
+      <if test="speak != null">
+        #{speak,jdbcType=BOOLEAN},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.User">
+    update user
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=CHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=BOOLEAN},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="userface != null">
+        userface = #{userface,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=CHAR},
+      </if>
+      <if test="wedlock != null">
+        wedlock = #{wedlock,jdbcType=OTHER},
+      </if>
+      <if test="nationId != null">
+        nationId = #{nationId,jdbcType=INTEGER},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="politicId != null">
+        politicId = #{politicId,jdbcType=INTEGER},
+      </if>
+      <if test="speak != null">
+        speak = #{speak,jdbcType=BOOLEAN},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.User">
+    update user
+    set `name` = #{name,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=CHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      enabled = #{enabled,jdbcType=BOOLEAN},
+      username = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      userface = #{userface,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=CHAR},
+      wedlock = #{wedlock,jdbcType=OTHER},
+      nationId = #{nationId,jdbcType=INTEGER},
+      email = #{email,jdbcType=VARCHAR},
+      politicId = #{politicId,jdbcType=INTEGER},
+      speak = #{speak,jdbcType=BOOLEAN}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateEnabled">
+    update user
+set `enabled`=#{enabled}
+where `id` =#{id}
+  </update>
+  <update id="updateSpeak">
+    update user
+    set `speak`=#{speak}
+    where `id` =#{id}
+  </update>
+</mapper>
