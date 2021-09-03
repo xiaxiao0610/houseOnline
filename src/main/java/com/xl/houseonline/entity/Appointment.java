@@ -1,11 +1,14 @@
 package com.xl.houseonline.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 /**
  * appointment
- * @author 
+ * @author
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Appointment implements Serializable {
     private Integer id;
 
@@ -43,6 +46,15 @@ public class Appointment implements Serializable {
      * 创建的时间
      */
     private Long createDate;
+    private Boolean success;
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
 
     private Rentaldemand rentaldemand;
     private User user;
@@ -129,59 +141,9 @@ public class Appointment implements Serializable {
         this.createDate = createDate;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        Appointment other = (Appointment) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getHouseId() == null ? other.getHouseId() == null : this.getHouseId().equals(other.getHouseId()))
-            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
-            && (this.getAdminId() == null ? other.getAdminId() == null : this.getAdminId().equals(other.getAdminId()))
-            && (this.getRentalId() == null ? other.getRentalId() == null : this.getRentalId().equals(other.getRentalId()))
-            && (this.getAppointmentDate() == null ? other.getAppointmentDate() == null : this.getAppointmentDate().equals(other.getAppointmentDate()))
-            && (this.getAppointmentStatus() == null ? other.getAppointmentStatus() == null : this.getAppointmentStatus().equals(other.getAppointmentStatus()))
-            && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()));
-    }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getHouseId() == null) ? 0 : getHouseId().hashCode());
-        result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
-        result = prime * result + ((getAdminId() == null) ? 0 : getAdminId().hashCode());
-        result = prime * result + ((getRentalId() == null) ? 0 : getRentalId().hashCode());
-        result = prime * result + ((getAppointmentDate() == null) ? 0 : getAppointmentDate().hashCode());
-        result = prime * result + ((getAppointmentStatus() == null) ? 0 : getAppointmentStatus().hashCode());
-        result = prime * result + ((getCreateDate() == null) ? 0 : getCreateDate().hashCode());
-        return result;
-    }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", houseId=").append(houseId);
-        sb.append(", userId=").append(userId);
-        sb.append(", adminId=").append(adminId);
-        sb.append(", rentalId=").append(rentalId);
-        sb.append(", appointmentDate=").append(appointmentDate);
-        sb.append(", appointmentStatus=").append(appointmentStatus);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
+
+
+
 }

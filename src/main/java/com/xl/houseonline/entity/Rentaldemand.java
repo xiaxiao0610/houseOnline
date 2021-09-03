@@ -1,11 +1,14 @@
 package com.xl.houseonline.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 /**
  * rentaldemand
  * @author 
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Rentaldemand implements Serializable {
     private Integer id;
 
@@ -46,6 +49,33 @@ public class Rentaldemand implements Serializable {
      */
     private Boolean delFlag;
     private User user;
+    private String call;
+    private Integer expectedPrice;//期望售价
+    private Long createDate;
+
+    public Long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Long createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCall() {
+        return call;
+    }
+
+    public void setCall(String call) {
+        this.call = call;
+    }
+
+    public Integer getExpectedPrice() {
+        return expectedPrice;
+    }
+
+    public void setExpectedPrice(Integer expectedPrice) {
+        this.expectedPrice = expectedPrice;
+    }
 
     public Rentaldemand() {
     }

@@ -23,4 +23,6 @@ public interface MenuDao {
     List<Menu> findAllMenus();
     //通过角色的Id获取到当前角色所具有的默认权限
     List<Integer> findMenuByRoleId(Integer rid);
+    //当前路径什么角色可以访问
+    List<Menu> menuWithRole();
 }

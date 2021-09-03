@@ -1,12 +1,12 @@
 package com.xl.houseonline.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xl.houseonline.entity.RespData;
 import com.xl.houseonline.service.AdminService;
 import com.xl.houseonline.utils.AdminUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -65,9 +65,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
-                        PrintWriter out=httpServletResponse.getWriter();
-                        ObjectMapper objectMapper=new ObjectMapper();
-                        String s="{\"status\":\"success\",\"msg\":" + objectMapper.writeValueAsString(AdminUtils.getCurrentHr()) + "}";
+                        PrintWriter out = httpServletResponse.getWriter();
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String s = "{\"status\":\"success\",\"msg\":" + objectMapper.writeValueAsString(AdminUtils.getCurrentHr()) + "}";
 //                        String s="{\"status\":\"success\",\"msg\":" + "}";
                         out.write(s);
                         out.flush();
@@ -87,6 +87,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             sb.append("用户名或密码输入错误，登录失败!!!!");
                         } else if (e instanceof DisabledException) {
                             sb.append("账户被禁用，登录失败，请联系管理员!");
+                        } else if (e instanceof CredentialsExpiredException) {
+                            sb.append("密码过期，请联系管理员!");
+                        } else if (e instanceof AccountExpiredException) {
+                            sb.append("账户过期，请联系管理员!");
                         } else {
                             sb.append("登录失败!");
                         }
@@ -99,17 +103,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .logout()
+                .logoutSuccessHandler((req, resp, authentication) -> {
+                    resp.setContentType("application/json;charset=utf-8");
+                    PrintWriter out = resp.getWriter();
+                    out.write(new ObjectMapper().writeValueAsString(RespData.success("注销成功!")));
+                    out.flush();
+                    out.close();
+                })
                 .permitAll()
                 .and()
                 .csrf()
                 .disable()
+//                .accessDeniedHandler(authenticationAccessDeniedHandler)
                 .exceptionHandling()
-                .accessDeniedHandler(authenticationAccessDeniedHandler);
+
+                //没有认证时，在这里处理结果，不要重定向
+                .authenticationEntryPoint((req, resp, authException) -> {
+                            resp.setContentType("application/json;charset=utf-8");
+                            resp.setStatus(500);
+                            PrintWriter out = resp.getWriter();
+                            RespData respData = RespData.fail("访问失败!");
+                            if (authException instanceof InsufficientAuthenticationException) {
+                                respData.setMessage("请求失败，请联系管理员!");
+                            }
+                            out.write(new ObjectMapper().writeValueAsString(respData));
+                            out.flush();
+                            out.close();
+                        }
+                );
+
+
 
     }
+
+
+
+
 //配置路径中带有哪些后缀时候选择过滤
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/index.html", "/static/**");
+        web.ignoring().antMatchers("/index.html","/websocket/{username}", "/static/**"
+        , "/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico");
     }
 }

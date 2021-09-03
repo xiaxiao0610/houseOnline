@@ -10,6 +10,7 @@
     <result column="appointmentDate" jdbcType="BIGINT" property="appointmentDate" />
     <result column="appointmentStatus" jdbcType="BOOLEAN" property="appointmentStatus" />
     <result column="createDate" jdbcType="BIGINT" property="createDate" />
+    <result column="success" jdbcType="BOOLEAN" property="success"/>
 <!--    <result column="rentalademand" property="rentaldemand" javaType="com.xl.houseonline.entity.Rentaldemand"/>-->
   </resultMap>
 
@@ -24,42 +25,59 @@
       <result column="building1" property="building"/>
       <result column="deFlag1" property="delFlag"/>
       <result column="demandState1" property="demandState"/>
+      <result column="call" property="call"/>
+
 
 <!--      <result column="user" property="user"/>-->
     </association>
 
     <association property="user" javaType="com.xl.houseonline.entity.User">
-      <id column="id" property="id"/>
+      <id column="id2" property="id"/>
       <result column="gender" property="gender"/>
       <result column="name" property="name"/>
+      <result column="userface" property="userface"/>
     </association>
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, houseId, userId, adminId, rentalId, appointmentDate, appointmentStatus, createDate
+    id, houseId, userId, adminId, rentalId, appointmentDate, appointmentStatus, createDate,success
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from appointment
     where id = #{id,jdbcType=INTEGER}
   </select>
     <select id="findAllStatus0" resultMap="findStatus0">
-      select u.`name`,u.`gender`,a.`id`,a.`rentalId`,r.`id` as id1,r.`uid` as uid1,r.`location` as location1,r.`door` as door1,r.`demandPhone` as demandPhone1,
-             r.`community` as community1,r.`building` as building1,r.`delFlag` as deFlag,r.`demandState` as demandState1
-      from appointment a,rentaldemand r ,user u where r.`id`=a.`rentalId` and r.`uid`=u.`id`
+      select u.`userface`,u.`name`,u.`gender`,u.`id` as id2,a.`adminId`,a.`appointmentDate`,a.`id`,a.`rentalId`,r.`id` as id1,r.`uid` as uid1,r.`location` as location1,r.`door` as door1,r.`demandPhone` as demandPhone1,
+             r.`call`,r.`community` as community1,r.`building` as building1,r.`delFlag` as deFlag,r.`demandState` as demandState1
+      from appointment a,rentaldemand r ,user u where r.`id`=a.`rentalId` and r.`uid`=u.`id`and a.`appointmentStatus`=0
+    <if test="page!=null and size!=null">
+      limit #{page},#{size}
+    </if>
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <select id="findMine" resultMap="findStatus0">
+    select u.`userface`,u.`name`,u.`gender`,u.`id` as id2,a.`adminId`,a.`appointmentDate`,a.`id`,a.`rentalId`,r.`id` as id1,r.`uid` as uid1,r.`location` as location1,r.`door` as door1,r.`demandPhone` as demandPhone1,
+           r.`community` as community1,r.`building` as building1,r.`delFlag` as deFlag,r.`demandState` as demandState1,r.`call`
+    from appointment a,rentaldemand r ,user u where r.`id`=a.`rentalId` and r.`uid`=u.`id`and a.`appointmentStatus`=1 and a.`adminId`=#{adminId} and a.`success`=0
+  </select>
+  <select id="findOne" resultMap="findStatus0">
+    select u.`userface`,u.`name`,u.`gender`,u.`id` as id2,a.`adminId`,a.`appointmentDate`,a.`id`,a.`rentalId`,r.`id` as id1,r.`uid` as uid1,r.`location` as location1,r.`door` as door1,r.`demandPhone` as demandPhone1,
+           r.`community` as community1,r.`building` as building1,r.`delFlag` as deFlag,r.`demandState` as demandState1
+    from appointment a,rentaldemand r ,user u where r.`id`=a.`rentalId` and r.`uid`=u.`id`and a.`appointmentStatus`=1 and a.`id`=#{id} and a.`success`=0
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from appointment
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Appointment" useGeneratedKeys="true">
-    insert into appointment (houseId, userId, adminId, 
-      rentalId, appointmentDate, appointmentStatus, 
-      createDate)
-    values (#{houseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER}, 
-      #{rentalId,jdbcType=INTEGER}, #{appointmentDate,jdbcType=BIGINT}, #{appointmentStatus,jdbcType=BOOLEAN}, 
-      #{createDate,jdbcType=BIGINT})
+    insert into appointment (houseId, userId, adminId,
+      rentalId, appointmentDate, appointmentStatus,
+      createDate,success)
+    values (#{houseId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER},
+      #{rentalId,jdbcType=INTEGER}, #{appointmentDate,jdbcType=BIGINT}, #{appointmentStatus,jdbcType=BOOLEAN},
+      #{createDate,jdbcType=BIGINT},#{success,jdbcType=BOOLEAN})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Appointment" useGeneratedKeys="true">
     insert into appointment
@@ -85,6 +103,9 @@
       <if test="createDate != null">
         createDate,
       </if>
+        <if test="success !=null">
+          success
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="houseId != null">
@@ -108,6 +129,9 @@
       <if test="createDate != null">
         #{createDate,jdbcType=BIGINT},
       </if>
+        <if test="success !=null">
+          #{success,jdbcType=BOOLEAN}
+        </if>
     </trim>
   </insert>
 
@@ -135,6 +159,9 @@
       <if test="createDate != null">
         createDate = #{createDate,jdbcType=BIGINT},
       </if>
+        <if test="success !=null">
+          success=#{success,jdbcType=BOOLEAN}
+        </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -146,7 +173,13 @@
       rentalId = #{rentalId,jdbcType=INTEGER},
       appointmentDate = #{appointmentDate,jdbcType=BIGINT},
       appointmentStatus = #{appointmentStatus,jdbcType=BOOLEAN},
-      createDate = #{createDate,jdbcType=BIGINT}
+      createDate = #{createDate,jdbcType=BIGINT},
+        success=#{success,jdbcType=BOOLEAN}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateAdminIdOnAppointment">
+    update appointment
+set adminId=#{adminId}
+where id=#{id}
   </update>
 </mapper>

@@ -37,4 +37,8 @@ public List<Integer> findMenuByRoleId(Integer rid){
         Integer result = menuRoleDao.insertRecord(rid, mids);
         return result==mids.length;
     }
+    //查询所以路径的角色
+    public List<Menu> getAllMenusWithRole(){
+        return menuDao.menuWithRole();
+    }
 }

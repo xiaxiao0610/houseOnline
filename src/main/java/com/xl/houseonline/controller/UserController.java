@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user/basic")
 public class UserController {
     @Autowired
     UserService userService;
     @GetMapping("/getAll")
-    public RespPage findAllByPage(@RequestParam(defaultValue = "2") Integer page, @RequestParam(defaultValue = "5")Integer size){
+    public RespPage findAllByPage(@RequestParam(defaultValue = "2") Integer page, @RequestParam(defaultValue = "5")Integer size,User user){
         RespPage respPage=new RespPage();
         respPage.setTotal(userService.UserCount());
-        respPage.setData(userService.findAllByPage(page, size));
+        respPage.setData(userService.findAllByPage(page, size,user));
         return respPage;
     }
     @PutMapping("/updateEnabled")
@@ -38,5 +38,17 @@ public class UserController {
             return RespData.fail("fail");
         }
 
+    }
+    @DeleteMapping("/")
+    public int  delIds(Integer[] delIds){
+        return userService.delIds(delIds);
+    }
+    @PostMapping("/reg/{username}/{password}")
+    public RespData userReg( @PathVariable("username") String username,@PathVariable("password") String password){
+        return userService.userReg(username, password);
+    }
+    @PostMapping("/doLogin/{username}/{password}")
+    public  RespData doLogin(@PathVariable("username") String username,@PathVariable("password") String password){
+        return userService.login(username, password);
     }
 }

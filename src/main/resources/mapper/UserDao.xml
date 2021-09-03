@@ -18,6 +18,7 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="politicId" jdbcType="INTEGER" property="politicId" />
     <result column="speak" jdbcType="BOOLEAN" property="speak" />
+    <result column="del" jdbcType="BOOLEAN" property="del"/>
   </resultMap>
   <resultMap id="DetailUseMessage" type="com.xl.houseonline.entity.User" extends="BaseResultMap">
     <association property="nation" javaType="com.xl.houseonline.entity.Nation">
@@ -31,7 +32,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, phone, telephone, address, enabled, username, `password`, userface, remark, 
-    gender, wedlock, nationId, email, politicId, speak
+    gender, wedlock, nationId, email, politicId, speak,del
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -48,7 +49,27 @@
            user u,nation n,political p
            where u.`nationId`=n.`id` and
                  u.`politicId`=p.`id`
-
+<if test="user.name!=null and user.name!=''">
+  and u.`name` like concat('%',#{user.name},'%')
+</if>
+<if test="user.gender!=null and user.gender!=''">
+  and u.`gender` like concat('%',#{user.gender},'%')
+</if>
+<if test="user.phone!=null and user.phone!=''">
+  and u.`phone` like concat('%',#{user.phone},'%')
+</if>
+<if test="user.address!=null and user.address!=''">
+  and u.`address` like concat('%',#{user.address},'%')
+</if>
+<if test="user.wedlock!=null and user.wedlock!=''">
+  and u.`wedlock` like concat('%',#{user.wedlock},'%')
+</if>
+<if test="user.nationId!=null and user.nationId!=''">
+  and u.`nationId` like concat('%',#{user.nationId},'%')
+</if>
+<if test="user.politicId!=null and user.politicId!=''">
+  and u.`politicId` like concat('%',#{user.politicId},'%')
+</if>
     <if test="page !=null and size!=null">
       limit #{page},#{size}
     </if>
@@ -56,22 +77,33 @@
   <select id="UserCount" resultType="java.lang.Integer">
     select count(*) from user;
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="findByUserName" resultType="com.xl.houseonline.entity.User">
+      select * from user where user.`username`=#{username}
+    </select>
+    <select id="doLogin" resultType="com.xl.houseonline.entity.User">
+      select * from user u where u.`username`=#{username}  and u.`enabled`=1 </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteIds" parameterType="int">
+    delete from user where id in
+    (<foreach collection="delIds" separator="," item="id">
+    #{id}
+  </foreach>  )
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.User" useGeneratedKeys="true">
     insert into user (`name`, phone, telephone, 
       address, enabled, username, 
       `password`, userface, remark, 
       gender, wedlock, nationId, 
-      email, politicId, speak
+      email, politicId, speak,del
       )
     values (#{name,jdbcType=VARCHAR}, #{phone,jdbcType=CHAR}, #{telephone,jdbcType=VARCHAR}, 
       #{address,jdbcType=VARCHAR}, #{enabled,jdbcType=BOOLEAN}, #{username,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{userface,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{gender,jdbcType=CHAR}, #{wedlock,jdbcType=OTHER}, #{nationId,jdbcType=INTEGER}, 
-      #{email,jdbcType=VARCHAR}, #{politicId,jdbcType=INTEGER}, #{speak,jdbcType=BOOLEAN}
+      #{email,jdbcType=VARCHAR}, #{politicId,jdbcType=INTEGER}, #{speak,jdbcType=BOOLEAN},#{del,jdbcType=BOOLEAN}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.User" useGeneratedKeys="true">
@@ -122,6 +154,9 @@
       <if test="speak != null">
         speak,
       </if>
+      <if test="del != null">
+        del,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -169,7 +204,13 @@
       <if test="speak != null">
         #{speak,jdbcType=BOOLEAN},
       </if>
+      <if test="del != null">
+        #{del,jdbcType=BOOLEAN},
+      </if>
     </trim>
+  </insert>
+  <insert id="userReg">
+    insert into user (`username`,`password`) values (#{username},#{password})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.User">
     update user
@@ -219,6 +260,9 @@
       <if test="speak != null">
         speak = #{speak,jdbcType=BOOLEAN},
       </if>
+      <if test="del != null">
+        speak = #{del,jdbcType=BOOLEAN},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -238,7 +282,8 @@
       nationId = #{nationId,jdbcType=INTEGER},
       email = #{email,jdbcType=VARCHAR},
       politicId = #{politicId,jdbcType=INTEGER},
-      speak = #{speak,jdbcType=BOOLEAN}
+      speak = #{speak,jdbcType=BOOLEAN},
+    del=#{del,jdbcType=BOOLEAN}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateEnabled">

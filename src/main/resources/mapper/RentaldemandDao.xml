@@ -11,17 +11,22 @@
     <result column="demandPhone" jdbcType="VARCHAR" property="demandPhone" />
     <result column="demandState" jdbcType="BOOLEAN" property="demandState" />
     <result column="delFlag" jdbcType="BOOLEAN" property="delFlag" />
+    <result column="call" jdbcType="VARCHAR" property="call"/>
+    <result column="expectedPrice" jdbcType="INTEGER" property="expectedPrice"/>
+    <result column="createDate" jdbcType="BIGINT" property="createDate"/>
+    <result column="call" jdbcType="VARCHAR" property="call"/>
 
   </resultMap>
   <resultMap id="rentMap" type="com.xl.houseonline.entity.Rentaldemand" extends="BaseResultMap">
     <association property="user" javaType="com.xl.houseonline.entity.User">
-      <id column="id" property="id"/>
+      <id column="id1" property="id"/>
       <result column="gender" property="gender"/>
       <result column="name" property="name"/>
+      <result column="userface" property="userface"/>
     </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, `uid`, `location`, community, building, door, demandPhone, demandState, delFlag
+    id, `uid`, `location`, community, building, door, demandPhone, demandState, delFlag,`call`,expectedPrice
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,13 +36,27 @@
   </select>
     <select id="findAllRentalData" resultMap="rentMap">select rent.`id`,
                                                               rent.`uid`,
+       rent.`call`,
+       rent.`createDate`,
                                                               rent.`location`,
                                                               rent.`community`,
-                                                              rent.`building`,rent.`door`,rent.`demandPhone`,rent.`demandState`,rent.`delFlag` ,u.`gender` ,u.`name`from `rentaldemand` rent ,
-                                                                                                                                                                         `user` u where rent.uid=u.id and rent.demandState=1
+                                                              rent.`building`,rent.`door`,rent.`demandPhone`,rent.`demandState`,rent.`delFlag` ,u.`gender` ,u.`name`,u.`id` as id1,u.`userface`from `rentaldemand` rent ,
+                                                                                                                                                             `user` u where rent.uid=u.id and rent.demandState=1 and rent.delFlag=0 order by rent.`createDate`
+<if test="user.name!=null and user.name!=''">
+  and u.`name` like concat('%',#{user.name},'%')
+</if>
+<if test="rent.demandPhone!=null and rent.demandPhone!=''">
+  and rent.`demandPhone` like concat ('%',#{rent.demandPhone},'%')
+</if>
+<!--      <if test="rent.create!=null and rent.create!=''">-->
+<!--        and rent.`create` like concat ('%',#{rent.demandPhone},'%')-->
+<!--      </if>-->
+      <if test="page!=null and size!=null">
+        limit #{page},#{size}
+      </if>
     </select>
   <select id="selectById" resultMap="rentMap">
-    select  r.*,u.`id`,u.`name`,u.`gender`
+    select  r.*,u.`id`,u.`name`,u.`gender`,u.`userface`
     from rentaldemand r,user u
     where r.`uid`=u.`id` and r.`id`=#{id}
   </select>
@@ -148,6 +167,7 @@
       demandPhone = #{demandPhone,jdbcType=VARCHAR},
       demandState = #{demandState,jdbcType=BOOLEAN},
       delFlag = #{delFlag,jdbcType=BOOLEAN}
+
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

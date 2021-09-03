@@ -1,14 +1,17 @@
 package com.xl.houseonline.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * user
  * @author 
  */
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class User implements Serializable {
     private Integer id;
 
@@ -33,6 +36,7 @@ public class User implements Serializable {
     private String address;
 
     private Boolean enabled;
+    private Boolean del;
 
     /**
      * 用户名
@@ -150,9 +154,13 @@ public class User implements Serializable {
         return username;
     }
 
+
+
     public void setUsername(String username) {
         this.username = username;
     }
+
+
 
     public String getPassword() {
         return password;
@@ -226,83 +234,14 @@ public class User implements Serializable {
         this.speak = speak;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        User other = (User) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
-            && (this.getTelephone() == null ? other.getTelephone() == null : this.getTelephone().equals(other.getTelephone()))
-            && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
-            && (this.getEnabled() == null ? other.getEnabled() == null : this.getEnabled().equals(other.getEnabled()))
-            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getUserface() == null ? other.getUserface() == null : this.getUserface().equals(other.getUserface()))
-            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
-            && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
-            && (this.getWedlock() == null ? other.getWedlock() == null : this.getWedlock().equals(other.getWedlock()))
-            && (this.getNationId() == null ? other.getNationId() == null : this.getNationId().equals(other.getNationId()))
-            && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-            && (this.getPoliticId() == null ? other.getPoliticId() == null : this.getPoliticId().equals(other.getPoliticId()))
-            && (this.getSpeak() == null ? other.getSpeak() == null : this.getSpeak().equals(other.getSpeak()));
+    public Boolean getDel() {
+        return del;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getPhone() == null) ? 0 : getPhone().hashCode());
-        result = prime * result + ((getTelephone() == null) ? 0 : getTelephone().hashCode());
-        result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
-        result = prime * result + ((getEnabled() == null) ? 0 : getEnabled().hashCode());
-        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
-        result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
-        result = prime * result + ((getUserface() == null) ? 0 : getUserface().hashCode());
-        result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
-        result = prime * result + ((getGender() == null) ? 0 : getGender().hashCode());
-        result = prime * result + ((getWedlock() == null) ? 0 : getWedlock().hashCode());
-        result = prime * result + ((getNationId() == null) ? 0 : getNationId().hashCode());
-        result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
-        result = prime * result + ((getPoliticId() == null) ? 0 : getPoliticId().hashCode());
-        result = prime * result + ((getSpeak() == null) ? 0 : getSpeak().hashCode());
-        return result;
+    public void setDel(Boolean del) {
+        this.del = del;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", phone=").append(phone);
-        sb.append(", telephone=").append(telephone);
-        sb.append(", address=").append(address);
-        sb.append(", enabled=").append(enabled);
-        sb.append(", username=").append(username);
-        sb.append(", password=").append(password);
-        sb.append(", userface=").append(userface);
-        sb.append(", remark=").append(remark);
-        sb.append(", gender=").append(gender);
-        sb.append(", wedlock=").append(wedlock);
-        sb.append(", nationId=").append(nationId);
-        sb.append(", email=").append(email);
-        sb.append(", politicId=").append(politicId);
-        sb.append(", speak=").append(speak);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
+
+
 }

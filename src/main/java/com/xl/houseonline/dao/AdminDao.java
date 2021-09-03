@@ -29,7 +29,13 @@ public interface AdminDao {
 //    @Select("select * from admin where id=#{id}")
     Admin findByUserID(Integer id);
 
-    List<Admin> findAllAdmin(@Param("id") Integer id);
+    List<Admin> findAllAdmin(@Param("id") Integer id,@Param("page") Integer page,@Param("size") Integer size);
 
+    int AdminReg(@Param("username") String username,@Param("password") String password);
 
+    Integer count();
+
+    List<Admin> findAdminSearch(@Param("page") Integer page,@Param("size") Integer size,@Param("name") String name);
+
+Integer likeCount(@Param("name") String name);
 }

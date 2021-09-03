@@ -27,9 +27,37 @@
     </select>
     <select id="findAllAdmin" resultType="com.xl.houseonline.entity.Admin">
 
-      select a.`id`,a.`name` ,a.`phone`,a.`telephone` ,a.`address` ,a.`userface`,a.`enabled` from admin a where a.`id`!=#{id}
+      select a.`id`,a.`username`,a.`name` ,a.`phone`,a.`telephone` ,a.`address` ,a.`userface`,a.`enabled` from admin a where a.`id`!=#{id}
+      <if test="page !=null and size!=null">
+        limit #{page},#{size}
+      </if>
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <select id="findAdminSearch" resultType="com.xl.houseonline.entity.Admin">
+    select a.`id`,a.`username`,a.`name` ,a.`phone`,a.`telephone` ,a.`address` ,a.`userface`,a.`enabled` from admin a
+where a.`name` like concat('%',#{name},'%')
+<!--    <where>-->
+<!--      <if test="name !=null and name!=''">-->
+<!--        a.name like concat('%',#{name},'%')-->
+<!--      </if>-->
+<!--    </where>-->
+    <if test="page !=null and size!=null">
+      limit #{page},#{size}
+    </if>
+
+  </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(*) from admin;
+  </select>
+  <select id="likeCount" resultType="java.lang.Integer">
+    select count(*) from admin a 
+<where>
+  <if test="name!=null and name!=''">
+    and a.name like  concat('%',#{name},'%')
+  </if>
+</where>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from admin
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -104,7 +132,10 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.Admin">
+    <insert id="AdminReg">
+      insert into admin(`username`,`password`) values (#{username},#{password})
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.Admin">
     update admin
     <set>
       <if test="name != null">
