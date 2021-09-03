@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.HouseInstallationDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.HouseInstallation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="houseId" jdbcType="INTEGER" property="houseId" />
+    <result column="iid" jdbcType="INTEGER" property="iid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, houseId, iid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from house_installation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from house_installation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByHouseId">
+      delete from house_installation
+      where houseId = #{houseId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.HouseInstallation" useGeneratedKeys="true">
+    insert into house_installation (houseId, iid)
+    values (#{houseId,jdbcType=INTEGER}, #{iid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.HouseInstallation" useGeneratedKeys="true">
+    insert into house_installation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        houseId,
+      </if>
+      <if test="iid != null">
+        iid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="iid != null">
+        #{iid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+    <insert id="addInstallation">
+      insert into house_installation (houseId,iid) values
+<foreach collection="ids" separator="," item="iid">
+  (#{houseId},#{iid})
+</foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.HouseInstallation">
+    update house_installation
+    <set>
+      <if test="houseId != null">
+        houseId = #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="iid != null">
+        iid = #{iid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.HouseInstallation">
+    update house_installation
+    set houseId = #{houseId,jdbcType=INTEGER},
+      iid = #{iid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

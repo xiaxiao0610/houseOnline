@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.HouseDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.House">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="adminId" jdbcType="INTEGER" property="adminId" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="community" jdbcType="VARCHAR" property="community" />
+    <result column="building" jdbcType="VARCHAR" property="building" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="door" jdbcType="VARCHAR" property="door" />
+    <result column="houseDescription" jdbcType="VARCHAR" property="houseDescription" />
+    <result column="createTime" jdbcType="BIGINT" property="createTime" />
+    <result column="deleteState" jdbcType="BOOLEAN" property="deleteState" />
+    <result column="publishState" jdbcType="BOOLEAN" property="publishState"/>
+  </resultMap>
+  <resultMap id="all" type="com.xl.houseonline.entity.House" extends="BaseResultMap">
+    <id column="hid" property="id"/>
+    <result column="location" property="location"/>
+<!--    <association property="admin" javaType="com.xl.houseonline.entity.Admin">-->
+<!--      <id column="aid" property="id"/>-->
+<!--      <result column="name" property="name"/>-->
+<!--      <result column="userface" property="userface"/>-->
+<!--      <result column="phone" property="phone"/>-->
+<!--    </association>-->
+    <association property="user" javaType="com.xl.houseonline.entity.User">
+      <id column="uid" property="id"/>
+      <result column="uname" property="name"/>
+      <result column="uphone" property="phone"/>
+      <result column="uface" property="userface"/>
+    </association>
+
+    <association property="housebasic" javaType="com.xl.houseonline.entity.Housebasic" >
+      <id column="hbid" property="id" javaType="INTEGER"/>
+      <result column="houseId" property="houseId"/>
+      <result column="rent" property="rent" />
+      <result column="mode" property="mode"/>
+      <result column="direction" property="direction"/>
+      <result column="region" property="region"/>
+      <result column="area" property="area"/>
+      <result column="metroLine" property="metroLine"/>
+      <result column="elevator" property="elevator"/>
+      <result column="parking" property="parking"/>
+      <result column="floor" property="floor"/>
+      <result column="houseType" property="houseType"/>
+      <result column="lease" property="lease"/>
+
+    </association>
+
+
+
+    <collection property="houseInstallationList" ofType="com.xl.houseonline.entity.HouseInstallation">
+      <id column="hiid" property="id" />
+      <result column="iid" property="iid" />
+      <result column="houseId" property="houseId"/>
+    </collection>
+    <collection property="houseImgList" ofType="com.xl.houseonline.entity.HouseImg">
+      <id column="himgid" property="id"/>
+      <result column="img" property="img" />
+
+    </collection>
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userId, adminId, `location`, community, building, unit, door, houseDescription, 
+    createTime, deleteState,publishState
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from house
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="all" resultMap="all">
+    select h.`adminId`,h.`id` as hid,
+           h.`location`,h.`community`,h.`building`,h.`door`,h.`houseDescription`,h.`deleteState`,h.`publishState`,
+           hi.`id` as hiid,hi.`iid`,hb.`id` as hbid,hb.`rent`,
+           hb.`lease`,hb.`area`,hb.`houseType`,hb.`direction`,hb.`floor`,hb.`metroLine`,hb.`elevator`,
+           hb.`parking`,
+           hb.`region`,hb.`mode`,himg.`id` as himgid,himg.`img`,himg.`index`,
+           a.`id` as aid,a.`name`,a.`phone`,a.`userface`,
+           u.`id` as uid,u.`name` as uname,u.`phone`as uphone,u.`userface` as uface
+    FROM house h,
+         house_installation hi,
+         admin a,
+         housebasic hb,
+         house_img himg,
+         user u
+    WHERE h.`id`=hi.`houseId`  and himg.`houseId`=h.`id` and hb.`houseId`=h.`id` and a.`id`=h.`adminId` and h.`userId`=u.`id`
+
+  </select>
+  <select id="findByID" resultMap="all">
+    select h.`adminId`,h.`id` as hid,
+           h.`location`,h.`community`,h.`building`,h.`door`,h.`houseDescription`,h.`deleteState`,h.`publishState`,
+           hi.`id` as hiid,hi.`iid`,hi.`houseId`,hb.`id` as hbid,hb.`rent`,
+           hb.`lease`,hb.`area`,hb.`houseType`,hb.`direction`,hb.`floor`,hb.`metroLine`,hb.`elevator`,
+           hb.`parking`,hb.`houseId`,
+           hb.`region`,hb.`mode`,himg.`id` as himgid,himg.`img`,himg.`index`,
+           a.`id` as aid,a.`name`,a.`phone`,a.`userface`,
+           u.`id` as uid,u.`name` as uname,u.`phone`as uphone,u.`userface` as uface
+    FROM house h,
+         house_installation hi,
+         admin a,
+         housebasic hb,
+         house_img himg,
+         user u
+    WHERE h.`id`=hi.`houseId`  and himg.`houseId`=h.`id` and hb.`houseId`=h.`id` and a.`id`=h.`adminId` and h.`userId`=u.`id` and h.`id`=#{id}
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from house
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.House" useGeneratedKeys="true">
+    insert into house (userId, adminId, `location`, 
+      community, building, unit,
+door, houseDescription, createTime
+      )
+    values (#{userId,jdbcType=INTEGER}, #{adminId,jdbcType=INTEGER}, #{location,jdbcType=VARCHAR}, 
+      #{community,jdbcType=VARCHAR}, #{building,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{door,jdbcType=VARCHAR}, #{houseDescription,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.House" useGeneratedKeys="true">
+    insert into house
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        userId,
+      </if>
+      <if test="adminId != null">
+        adminId,
+      </if>
+      <if test="location != null">
+        `location`,
+      </if>
+      <if test="community != null">
+        community,
+      </if>
+      <if test="building != null">
+        building,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="door != null">
+        door,
+      </if>
+      <if test="houseDescription != null">
+        houseDescription,
+      </if>
+      <if test="createTime != null">
+        createTime,
+      </if>
+      <if test="deleteState != null">
+        deleteState,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null">
+        #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="door != null">
+        #{door,jdbcType=VARCHAR},
+      </if>
+      <if test="houseDescription != null">
+        #{houseDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="deleteState != null">
+        #{deleteState,jdbcType=BOOLEAN},
+      </if>
+    </trim>
+  </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.House">
+    update house
+    <set>
+      <if test="userId != null">
+        userId = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="adminId != null">
+        adminId = #{adminId,jdbcType=INTEGER},
+      </if>
+      <if test="location != null">
+        `location` = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null">
+        community = #{community,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        building = #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="door != null">
+        door = #{door,jdbcType=VARCHAR},
+      </if>
+      <if test="houseDescription != null">
+        houseDescription = #{houseDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        createTime = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="deleteState != null">
+        deleteState = #{deleteState,jdbcType=BOOLEAN},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.House">
+    update house
+    set userId = #{userId,jdbcType=INTEGER},
+      adminId = #{adminId,jdbcType=INTEGER},
+      `location` = #{location,jdbcType=VARCHAR},
+      community = #{community,jdbcType=VARCHAR},
+      building = #{building,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      door = #{door,jdbcType=VARCHAR},
+      houseDescription = #{houseDescription,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=DATE},
+      deleteState = #{deleteState,jdbcType=BOOLEAN}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updatePublish">
+    update house
+        set `publishState`=#{state}
+where `id`=#{id}
+  </update>
+</mapper>

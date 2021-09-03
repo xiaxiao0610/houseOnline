@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.HouseImgDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.HouseImg">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="houseId" jdbcType="INTEGER" property="houseId" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="index" jdbcType="INTEGER" property="index"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, houseId, img,index
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from house_img
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from house_img
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.HouseImg" useGeneratedKeys="true">
+    insert into house_img (houseId, img)
+    values (#{houseId,jdbcType=INTEGER}, #{img,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.HouseImg" useGeneratedKeys="true">
+    insert into house_img
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        houseId,
+      </if>
+      <if test="img != null">
+        img,
+      </if>
+      <if test="index != null">
+        index,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="img != null">
+        #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null">
+        #{index,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.HouseImg">
+    update house_img
+    <set>
+      <if test="houseId != null">
+        houseId = #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="img != null">
+        img = #{img,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.HouseImg">
+    update house_img
+    set houseId = #{houseId,jdbcType=INTEGER},
+      img = #{img,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

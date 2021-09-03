@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xl.houseonline.dao.HousebasicDao">
+  <resultMap id="BaseResultMap" type="com.xl.houseonline.entity.Housebasic">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="houseId" jdbcType="INTEGER" property="houseId" />
+    <result column="rent" jdbcType="VARCHAR" property="rent" />
+    <result column="lease" jdbcType="VARCHAR" property="lease" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="houseType" jdbcType="VARCHAR" property="houseType" />
+    <result column="direction" jdbcType="VARCHAR" property="direction" />
+    <result column="elevator" jdbcType="VARCHAR" property="elevator" />
+    <result column="parking" jdbcType="VARCHAR" property="parking" />
+    <result column="floor" jdbcType="VARCHAR" property="floor" />
+    <result column="metroLine" jdbcType="VARCHAR" property="metroLine"/>
+    <result column="region" jdbcType="VARCHAR" property="region"/>
+    <result column="mode" jdbcType="VARCHAR" property="mode"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, houseId, rent, lease, area, houseType, direction, elevator, parking, `floor`,metroLine,region,mode
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from housebasic
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from housebasic
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Housebasic" useGeneratedKeys="true">
+    insert into housebasic (houseId, rent, lease, 
+      area, houseType, direction, 
+      elevator, parking, `floor`,metroLine,region,mode
+      )
+    values (#{houseId,jdbcType=INTEGER}, #{rent,jdbcType=VARCHAR}, #{lease,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{houseType,jdbcType=VARCHAR}, #{direction,jdbcType=VARCHAR}, 
+      #{elevator,jdbcType=VARCHAR}, #{parking,jdbcType=VARCHAR}, #{floor,jdbcType=VARCHAR},#{metroLine,jdbcType=VARCHAR}
+      #{region,jdbcType=VARCHAR},#{mode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xl.houseonline.entity.Housebasic" useGeneratedKeys="true">
+    insert into housebasic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        houseId,
+      </if>
+      <if test="rent != null">
+        rent,
+      </if>
+      <if test="lease != null">
+        lease,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="houseType != null">
+        houseType,
+      </if>
+      <if test="direction != null">
+        direction,
+      </if>
+      <if test="elevator != null">
+        elevator,
+      </if>
+      <if test="parking != null">
+        parking,
+      </if>
+      <if test="floor != null">
+        `floor`,
+      </if>
+        <if test="metroLine !=null">
+          metroLine,
+        </if>
+        <if test="region !=null">
+          region,
+        </if>
+        <if test="mode !=null">
+          mode
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="houseId != null">
+        #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="rent != null">
+        #{rent,jdbcType=VARCHAR},
+      </if>
+      <if test="lease != null">
+        #{lease,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="houseType != null">
+        #{houseType,jdbcType=VARCHAR},
+      </if>
+      <if test="direction != null">
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="elevator != null">
+        #{elevator,jdbcType=VARCHAR},
+      </if>
+      <if test="parking != null">
+        #{parking,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        #{floor,jdbcType=VARCHAR},
+      </if>
+        <if test="metroLine !=null">
+          #{metroLine,jdbcType=VARCHAR},
+        </if>
+<if test="region !=null">
+  #{region,jdbcType=VARCHAR},
+</if>
+<if test="mode !=null">
+  #{mode,jdbcType=VARCHAR}
+</if>
+
+
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xl.houseonline.entity.Housebasic">
+    update housebasic
+    <set>
+      <if test="houseId != null">
+        houseId = #{houseId,jdbcType=INTEGER},
+      </if>
+      <if test="rent != null">
+        rent = #{rent,jdbcType=VARCHAR},
+      </if>
+      <if test="lease != null">
+        lease = #{lease,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="houseType != null">
+        houseType = #{houseType,jdbcType=VARCHAR},
+      </if>
+      <if test="direction != null">
+        direction = #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="elevator != null">
+        elevator = #{elevator,jdbcType=VARCHAR},
+      </if>
+      <if test="parking != null">
+        parking = #{parking,jdbcType=VARCHAR},
+      </if>
+      <if test="floor != null">
+        `floor` = #{floor,jdbcType=VARCHAR},
+      </if>
+      <if test="metroLine != null">
+        metroLine = #{metroLine,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="mode != null">
+        mode = #{mode,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xl.houseonline.entity.Housebasic">
+    update housebasic
+    set houseId = #{houseId,jdbcType=INTEGER},
+      rent = #{rent,jdbcType=VARCHAR},
+      lease = #{lease,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      houseType = #{houseType,jdbcType=VARCHAR},
+      direction = #{direction,jdbcType=VARCHAR},
+      elevator = #{elevator,jdbcType=VARCHAR},
+      parking = #{parking,jdbcType=VARCHAR},
+      `floor` = #{floor,jdbcType=VARCHAR},
+    metroLine = #{metroLine,jdbcType=VARCHAR},
+        region = #{region,jdbcType=VARCHAR},
+        mode = #{mode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
